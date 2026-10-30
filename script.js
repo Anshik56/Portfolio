@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initResumeModals();
   initSimonSaysEngine();
   initTicTacToeEngine();
+  initBackgroundMusic();
 });
 
 /* ==========================================================================
@@ -759,4 +760,116 @@ function handleSimonUserClick(color) {
       statusEl.innerHTML = `<span style="color: #f43f5e">Game Over at Level ${simonLevel}! Click START to try again.</span>`;
     }
   }
+}
+
+/* ==========================================================================
+   10. BACKGROUND AMBIENT MUSIC CONTROLLER
+   ========================================================================== */
+function initBackgroundMusic() {
+  const audio = document.getElementById('bg-music-audio');
+  const toggleBtn = document.getElementById('music-toggle-btn');
+  const muteBtn = document.getElementById('music-mute-btn');
+  const detailsToggle = document.getElementById('music-details-toggle');
+  const dock = document.getElementById('music-player');
+  const statusText = document.getElementById('music-status-text');
+  const playIcon = toggleBtn ? toggleBtn.querySelector('.music-play-icon') : null;
+  const pauseIcon = toggleBtn ? toggleBtn.querySelector('.music-pause-icon') : null;
+  const volumeIcon = muteBtn ? muteBtn.querySelector('.music-volume-icon') : null;
+  const muteIcon = muteBtn ? muteBtn.querySelector('.music-mute-icon') : null;
+
+  if (!audio || !toggleBtn || !muteBtn || !dock) return;
+
+  // Set initial volume to a soft, calming background level (25%)
+  const INITIAL_VOLUME = 0.25;
+  audio.volume = INITIAL_VOLUME;
+
+  function updatePlayState(isPlaying) {
+    if (isPlaying) {
+      dock.classList.add('is-playing');
+      dock.classList.remove('is-paused');
+      if (playIcon) playIcon.classList.add('music-hidden');
+      if (pauseIcon) pauseIcon.classList.remove('music-hidden');
+      toggleBtn.setAttribute('aria-label', 'Pause background music');
+      toggleBtn.setAttribute('title', 'Pause background music');
+      if (statusText) statusText.textContent = audio.muted ? 'Muted' : 'Playing';
+    } else {
+      dock.classList.remove('is-playing');
+      dock.classList.add('is-paused');
+      if (playIcon) playIcon.classList.remove('music-hidden');
+      if (pauseIcon) pauseIcon.classList.add('music-hidden');
+      toggleBtn.setAttribute('aria-label', 'Play background music');
+      toggleBtn.setAttribute('title', 'Play background music');
+      if (statusText) statusText.textContent = 'Paused';
+    }
+  }
+
+  function updateMuteState(isMuted) {
+    if (isMuted) {
+      dock.classList.add('is-muted');
+      if (volumeIcon) volumeIcon.classList.add('music-hidden');
+      if (muteIcon) muteIcon.classList.remove('music-hidden');
+      muteBtn.setAttribute('aria-label', 'Unmute audio');
+      muteBtn.setAttribute('title', 'Unmute audio');
+      if (statusText && !audio.paused) statusText.textContent = 'Muted';
+    } else {
+      dock.classList.remove('is-muted');
+      if (volumeIcon) volumeIcon.classList.remove('music-hidden');
+      if (muteIcon) muteIcon.classList.add('music-hidden');
+      muteBtn.setAttribute('aria-label', 'Mute audio');
+      muteBtn.setAttribute('title', 'Mute audio');
+      if (statusText && !audio.paused) statusText.textContent = 'Playing';
+    }
+  }
+
+  function togglePlayPause() {
+    if (audio.paused) {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            updatePlayState(true);
+          })
+          .catch((err) => {
+            console.warn('Audio playback prevented or failed:', err);
+          });
+      }
+    } else {
+      audio.pause();
+      updatePlayState(false);
+    }
+  }
+
+  function toggleMute() {
+    audio.muted = !audio.muted;
+    updateMuteState(audio.muted);
+  }
+
+  // Play / Pause event listeners
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePlayPause();
+  });
+
+  if (detailsToggle) {
+    detailsToggle.addEventListener('click', () => {
+      togglePlayPause();
+    });
+    detailsToggle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        togglePlayPause();
+      }
+    });
+  }
+
+  // Mute / Unmute event listener
+  muteBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMute();
+  });
+
+  // Native HTML5 audio event listeners to guarantee sync with system events
+  audio.addEventListener('play', () => updatePlayState(true));
+  audio.addEventListener('pause', () => updatePlayState(false));
+  audio.addEventListener('volumechange', () => updateMuteState(audio.muted));
 }

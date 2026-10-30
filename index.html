@@ -1392,6 +1392,59 @@
     </div>
   </footer>
 
+  <!-- BACKGROUND MUSIC CONTROLLER -->
+  <aside id="music-player" class="music-dock" aria-label="Background Music Controller">
+    <audio id="bg-music-audio" loop preload="none">
+      <source src="assets/music/calm-ambient.mp3" type="audio/mpeg">
+      Your browser does not support audio playback.
+    </audio>
+
+    <div class="music-dock-inner">
+      <!-- Play / Pause Button -->
+      <button id="music-toggle-btn" class="music-btn music-btn-primary" aria-label="Play background music" title="Play background music">
+        <!-- Play Icon -->
+        <svg class="music-icon music-play-icon" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="6 3 20 12 6 21 6 3"></polygon>
+        </svg>
+        <!-- Pause Icon -->
+        <svg class="music-icon music-pause-icon music-hidden" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+          <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+        </svg>
+      </button>
+
+      <!-- Music Visualizer Equalizer Waves & Label -->
+      <div class="music-details" id="music-details-toggle" role="button" tabindex="0" aria-label="Toggle music playback">
+        <div class="music-equalizer" aria-hidden="true">
+          <span class="eq-bar eq-bar-1"></span>
+          <span class="eq-bar eq-bar-2"></span>
+          <span class="eq-bar eq-bar-3"></span>
+          <span class="eq-bar eq-bar-4"></span>
+        </div>
+        <div class="music-text-group">
+          <span class="music-label">Ambient Sound</span>
+          <span id="music-status-text" class="music-sublabel">Click to Play</span>
+        </div>
+      </div>
+
+      <!-- Mute / Unmute Button -->
+      <button id="music-mute-btn" class="music-btn music-btn-secondary" aria-label="Mute audio" title="Mute/Unmute audio">
+        <!-- Speaker On Icon -->
+        <svg class="music-icon music-volume-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+        <!-- Speaker Muted Icon -->
+        <svg class="music-icon music-mute-icon music-hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="22" y1="9" x2="16" y2="15"></line>
+          <line x1="16" y1="9" x2="22" y2="15"></line>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
   <!-- BACK TO TOP FLOATING BUTTON -->
   <button id="back-to-top" class="back-to-top-btn" aria-label="Back to Top" title="Back to Top">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
